@@ -2,6 +2,7 @@ import { getVideos } from "./lib/actions";
 import Subscriptions from "./ui/youtube/subscriptions";
 import Video from "./ui/youtube/video";
 import { useSearchParams } from "next/navigation";
+import TodoGrid from "./ui/todo/todoGrid";
 
 export default async function Home({
   searchParams,
@@ -18,7 +19,7 @@ export default async function Home({
         <div className="text-3xl">
           <h1>Media Dashboard</h1>
         </div>
-        <div className="flex flex-row bg-valentino-900 w-full h-96 outline outlnie-4 outline-valentino-900">
+        <div className="flex flex-row bg-valentino-900 rounded w-full h-96 outline outlnie-4 outline-valentino-900">
           <div className="">
             <Video videoId={vid || defaultVideoId} />
           </div>
@@ -26,12 +27,9 @@ export default async function Home({
             <Subscriptions channelVideos={channelVideos} />
           </div>
         </div>
-        <div className='grid grid-cols-2 w-full h-96 rounded bg-valentino-900 outline outlnie-4 outline-valentino-900'>
-          <div>
-            test 2
-          </div>
-          <div>
-            test 3
+        <div className='flex flex-row w-full h-full rounded bg-valentino-900 outline outlnie-4 outline-valentino-900'>
+          <div className='w-full overflow-y-auto h-full p-4'>
+            <TodoGrid />
           </div>
         </div>
       </main>
