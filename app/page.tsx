@@ -28,7 +28,7 @@ export default async function Home({
           </div>
         </div>
         <div className='flex flex-row w-full h-full rounded bg-valentino-900 outline outlnie-4 outline-valentino-900'>
-          <div className='w-full overflow-y-auto h-full p-4'>
+          <div className='w-full overflow-y-auto h-full mt-4 pl-6 pr-4'>
             <TodoGrid />
           </div>
         </div>

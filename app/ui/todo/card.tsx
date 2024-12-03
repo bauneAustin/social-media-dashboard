@@ -15,14 +15,8 @@ import ReactDOM from 'react-dom';
 import invariant from 'tiny-invariant';
 
 import Avatar from '@atlaskit/avatar';
-import { IconButton } from '@atlaskit/button/new';
-import DropdownMenu, { DropdownItem, DropdownItemGroup } from '@atlaskit/dropdown-menu';
-// eslint-disable-next-line @atlaskit/design-system/no-banned-imports
-import mergeRefs from '@atlaskit/ds-lib/merge-refs';
+import { DropdownItem } from '@atlaskit/dropdown-menu';
 import Heading from '@atlaskit/heading';
-// This is the smaller MoreIcon soon to be more easily accessible with the
-// ongoing icon project
-import MoreIcon from '@atlaskit/icon/utility/migration/show-more-horizontal--editor-more';
 import {
     attachClosestEdge,
     type Edge,

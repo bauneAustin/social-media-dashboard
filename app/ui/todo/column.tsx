@@ -42,9 +42,9 @@ import { Card } from './card';
 import { ColumnContext, type ColumnContextProps, useColumnContext } from './columnContext';
 
 const columnStyles = xcss({
-    width: '96em',
+    width: '35em',
     // @ts-ignore
-    backgroundColor: '#5e5d5c',
+    backgroundColor: '#525151',
     borderRadius: 'border.radius.300',
     transition: `background ${mediumDurationMs}ms ${easeInOut}`,
     position: 'relative',
