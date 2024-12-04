@@ -1,19 +1,50 @@
+'use client';
 import { useState } from "react";
+import Form from 'next/form';
+import { v4 } from "uuid";
+import { addTodo } from "@/app/lib/actions";
+
 export default function AddTodo() {
-    const handleChange = () => {};
-    const handleSubmit = () => {};
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        column: 'Todo'
-    })
+        column: 'todo'
+    });
+    const handleChange = (evt) => {
+        console.log(evt.target);
+        setFormData(prevData => ({
+            ...prevData,
+            [evt.target.name]: evt.target.value,
+        }));
+    };
+
+    const handleSubmit = async (formData: FormData) => {
+        const todos = window.localStorage.getItem('todos');
+        if(todos) {
+            const todosList = JSON.parse(todos);
+            todosList.push(
+                {
+                    todoId: `id:${v4()}`,
+                    title: formData.get('title'),
+                    description: formData.get('description'),
+                    column: formData.get('column')
+                }
+            );
+            window.localStorage.setItem('todos', JSON.stringify(todosList));
+        }
+        await addTodo();
+    };
+
     return (
         <div>
-            <h2>Add Todo Item</h2>
-            <form onSubmit={handleSubmit}>
+            <h2 className="flex w-full mb-6 text-2xl align-middle justify-center font-semibold">
+                Add Todo Item
+            </h2>
+            <Form action={handleSubmit} className="p-4 bg-valentino-800 rounded">
                 {/* Text Input */}
-                <label htmlFor="name">Title: </label>
+                <label className="text-lg mr-2 font-semibold" htmlFor="name">Title: </label>
                 <input
+                    className="text-valentino-950 rounded border-none p-1"
                     type="text"
                     id="title"
                     name="title"
@@ -23,9 +54,10 @@ export default function AddTodo() {
                 /><br /><br />
 
                 {/* Text Area */}
-                <label htmlFor="message">Description: </label>
+                <label className="text-lg mb-2 font-semibold" htmlFor="message">Description: </label>
                 <br />
                 <textarea
+                    className="text-valentino-950 rounded border-none p-1"
                     id="description"
                     name="description"
                     value={formData.description}
@@ -37,41 +69,45 @@ export default function AddTodo() {
                 <br />
 
                 {/* Radio Buttons */}
-                <label>Choose an Status: </label><br />
-                <input
-                    type="radio"
-                    id="todo"
-                    name="todo"
-                    value="Todo"
-                    checked={formData.column === 'Todo'}
-                    onChange={handleChange}
-                />
-                <label htmlFor="option1">Todo</label><br />
+                <label className="text-lg font-semibold">Choose an Status: </label><br />
+                <div className='flex'>
+                    <input
+                        className="mr-2 cursor-pointer"
+                        type="radio"
+                        id="todo"
+                        name="column"
+                        value="todo"
+                        checked={formData.column === 'todo'}
+                        onChange={handleChange}
+                    />
+                    <label className="mr-4" htmlFor="option1">Todo</label><br />
 
-                <input
-                    type="radio"
-                    id="inProgress"
-                    name="inProgress"
-                    value="In Progress"
-                    checked={formData.column === 'In Progress'}
-                    onChange={handleChange}
-                />
-                <label htmlFor="option2">In Progress</label><br />
+                    <input
+                        className="mr-2 cursor-pointer"
+                        type="radio"
+                        id="inProgress"
+                        name="column"
+                        value="inProgress"
+                        checked={formData.column === 'inProgress'}
+                        onChange={handleChange}
+                    />
+                    <label className="mr-4" htmlFor="option2">In Progress</label><br />
 
-                <input
-                    type="radio"
-                    id="done"
-                    name="done"
-                    value="Done"
-                    checked={formData.column === 'Done'}
-                    onChange={handleChange}
-                />
-                <label htmlFor="option3">Done</label>
-                <br />
-                <br />
-
-                <input type="submit" value="Submit" />
-            </form>
+                    <input
+                        className="mr-2 cursor-pointer"
+                        type="radio"
+                        id="done"
+                        name="column"
+                        value="done"
+                        checked={formData.column === 'done'}
+                        onChange={handleChange}
+                    />
+                    <label className="mr-4" htmlFor="option3">Done</label>
+                </div>
+                <div className='flex w-full flex-row-reverse mt-3'>
+                    <button className="pt-3 pb-3 pl-6 pr-6 bg-valentino-400 rounded hover:bg-valentino-100 hover:text-valentino-950" type="submit" value="Submit">Add</button>
+                </div>
+            </Form>
         </div>
     );
 };

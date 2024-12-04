@@ -1,7 +1,8 @@
 'use server'
 
 import { google } from "googleapis";
-import { subs, channel } from "./delete";
+import { revalidatePath } from "next/cache";
+
 const youtube = google.youtube({
     version: "v3",
     key: process.env.GOOGLE_API_KEY
@@ -51,5 +52,9 @@ export const getVideo = async (id) => {
     });
 
     return details.data;
+};
+
+export const addTodo = async () => {
+    revalidatePath('/', 'page');
 }
 
