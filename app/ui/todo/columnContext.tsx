@@ -4,7 +4,7 @@ import invariant from 'tiny-invariant';
 
 export type ColumnContextProps = {
     columnId: string;
-    getCardIndex: (userId: string) => number;
+    getCardIndex: (todoId: string) => number;
     getNumCards: () => number;
 };
 

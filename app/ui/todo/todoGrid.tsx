@@ -13,11 +13,12 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder';
 
-import { type ColumnMap, type ColumnType, getBasicData, type Person } from './people';
+import { type ColumnMap, type ColumnType, getBasicData, type TodoItem } from './people';
 import Board from './board';
 import { BoardContext, type BoardContextValue } from './boardContext';
 import { Column } from './column';
 import { createRegistry } from './registry';
+import AddMenu from './addMenu';
 
 type Outcome =
     | {
@@ -54,7 +55,21 @@ type BoardState = {
 
 export default function TodoGrid(){
     const [data, setData] = useState<BoardState>(() => {
-        const base = getBasicData();
+        let localTodos: string = window.localStorage.getItem("todos") || '';
+        let initialData: TodoItem[];
+        if (!localTodos) {
+            initialData = [{
+                todoId: 'id:1',
+                title: "First Todo",
+                description: "This is your first todo",
+                column: 'todo'
+            }];
+            window.localStorage.setItem("todos", JSON.stringify(initialData));
+        }
+        else {
+            initialData = JSON.parse(localTodos);
+        }
+        const base = getBasicData(initialData);
         return {
             ...base,
             lastOperation: null,
@@ -100,7 +115,7 @@ export default function TodoGrid(){
             const column = columnMap[columnId];
             const item = column.items[finishIndex];
 
-            const entry = registry.getCard(item.userId);
+            const entry = registry.getCard(item.todoId);
             triggerPostMoveFlash(entry.element);
 
             if (trigger !== 'keyboard') {
@@ -108,7 +123,7 @@ export default function TodoGrid(){
             }
 
             liveRegion.announce(
-                `You've moved ${item.name} from position ${startIndex + 1
+                `You've moved ${item.title} from position ${startIndex + 1
                 } to position ${finishIndex + 1} of ${column.items.length} in the ${column.title} column.`,
             );
 
@@ -127,7 +142,7 @@ export default function TodoGrid(){
                     ? itemIndexInFinishColumn + 1
                     : destinationColumn.items.length;
 
-            const entry = registry.getCard(item.userId);
+            const entry = registry.getCard(item.todoId);
             triggerPostMoveFlash(entry.element);
 
             if (trigger !== 'keyboard') {
@@ -135,7 +150,7 @@ export default function TodoGrid(){
             }
 
             liveRegion.announce(
-                `You've moved ${item.name} from position ${itemIndexInStartColumn + 1
+                `You've moved ${item.title} from position ${itemIndexInStartColumn + 1
                 } to position ${finishPosition} in the ${destinationColumn.title} column.`,
             );
 
@@ -264,7 +279,7 @@ export default function TodoGrid(){
             setData((data) => {
                 const sourceColumn = data.columnMap[startColumnId];
                 const destinationColumn = data.columnMap[finishColumnId];
-                const item: Person = sourceColumn.items[itemIndexInStartColumn];
+                const item: TodoItem = sourceColumn.items[itemIndexInStartColumn];
 
                 const destinationItems = Array.from(destinationColumn.items);
                 // Going into the first position if no index is provided
@@ -275,7 +290,7 @@ export default function TodoGrid(){
                     ...data.columnMap,
                     [startColumnId]: {
                         ...sourceColumn,
-                        items: sourceColumn.items.filter((i) => i.userId !== item.userId),
+                        items: sourceColumn.items.filter((i) => i.todoId !== item.todoId),
                     },
                     [finishColumnId]: {
                         ...destinationColumn,
@@ -350,7 +365,7 @@ export default function TodoGrid(){
                         const sourceId = startColumnRecord.data.columnId;
                         invariant(typeof sourceId === 'string');
                         const sourceColumn = data.columnMap[sourceId];
-                        const itemIndex = sourceColumn.items.findIndex((item) => item.userId === itemId);
+                        const itemIndex = sourceColumn.items.findIndex((item) => item.todoId === itemId);
 
                         if (location.current.dropTargets.length === 1) {
                             const [destinationColumnRecord] = location.current.dropTargets;
@@ -394,7 +409,7 @@ export default function TodoGrid(){
                             const destinationColumn = data.columnMap[destinationColumnId];
 
                             const indexOfTarget = destinationColumn.items.findIndex(
-                                (item) => item.userId === destinationCardRecord.data.itemId,
+                                (item) => item.todoId === destinationCardRecord.data.itemId,
                             );
                             const closestEdgeOfTarget: Edge | null = extractClosestEdge(
                                 destinationCardRecord.data,
@@ -449,12 +464,19 @@ export default function TodoGrid(){
     }, [getColumns, reorderColumn, reorderCard, registry, moveCard, instanceId]);
 
     return (
-        <BoardContext.Provider value={contextValue}>
-            <Board>
-                {data.orderedColumnIds.map((columnId) => {
-                    return <Column column={data.columnMap[columnId]} key={columnId} />;
-                })}
-            </Board>
-        </BoardContext.Provider>
+        <>
+            <div className='w-px:100 h-px:100 rounded ml-6 mt-4'>
+                <AddMenu callback={() => {}} />
+            </div>
+            <div className='w-full overflow-y-auto h-96 mt-4 relative'>
+                <BoardContext.Provider value={contextValue}>
+                    <Board>
+                        {data.orderedColumnIds.map((columnId) => {
+                            return <Column column={data.columnMap[columnId]} key={columnId} />;
+                        })}
+                    </Board>
+                </BoardContext.Provider>
+            </div>
+        </>
     );
 };

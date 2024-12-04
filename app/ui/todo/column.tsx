@@ -42,7 +42,7 @@ import { Card } from './card';
 import { ColumnContext, type ColumnContextProps, useColumnContext } from './columnContext';
 
 const columnStyles = xcss({
-    width: '35em',
+    width: '32em',
     // @ts-ignore
     backgroundColor: '#525151',
     borderRadius: 'border.radius.300',
@@ -262,8 +262,8 @@ export const Column = memo(function Column({ column }: { column: ColumnType }) {
         stableItems.current = column.items;
     }, [column.items]);
 
-    const getCardIndex = useCallback((userId: string) => {
-        return stableItems.current.findIndex((item) => item.userId === userId);
+    const getCardIndex = useCallback((todoId: string) => {
+        return stableItems.current.findIndex((item) => item.todoId === todoId);
     }, []);
 
     const getNumCards = useCallback(() => {
@@ -303,7 +303,7 @@ export const Column = memo(function Column({ column }: { column: ColumnType }) {
                         <Box xcss={scrollContainerStyles} ref={scrollableRef}>
                             <Stack xcss={cardListStyles} space="space.100">
                                 {column.items.map((item) => (
-                                    <Card item={item} key={item.userId} />
+                                    <Card item={item} key={item.todoId} />
                                 ))}
                             </Stack>
                         </Box>
@@ -334,14 +334,6 @@ function SafariColumnPreview({ column }: { column: ColumnType }) {
                 {column.title}
             </Heading>
         </Box>
-    );
-}
-
-function ActionMenu() {
-    return (
-        <DropdownMenu trigger={DropdownMenuTrigger}>
-            <ActionMenuItems />
-        </DropdownMenu>
     );
 }
 

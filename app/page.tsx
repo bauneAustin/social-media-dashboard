@@ -3,6 +3,7 @@ import Subscriptions from "./ui/youtube/subscriptions";
 import Video from "./ui/youtube/video";
 import { useSearchParams } from "next/navigation";
 import TodoGrid from "./ui/todo/todoGrid";
+import AddMenu from "./ui/todo/addMenu";
 
 export default async function Home({
   searchParams,
@@ -28,9 +29,7 @@ export default async function Home({
           </div>
         </div>
         <div className='flex flex-row w-full h-full rounded bg-valentino-900 outline outlnie-4 outline-valentino-900'>
-          <div className='w-full overflow-y-auto h-full mt-4 pl-6 pr-4'>
-            <TodoGrid />
-          </div>
+          <TodoGrid />
         </div>
       </main>
     </div>
