@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import invariant from 'tiny-invariant';
 
 import { IconButton } from '@atlaskit/button/new';
-import DropdownMenu, {
+import {
     type CustomTriggerProps,
     DropdownItem,
     DropdownItemGroup,
@@ -140,7 +140,7 @@ const isDraggingStyles = xcss({
     opacity: 0.4,
 });
 
-export const Column = memo(function Column({ column }: { column: ColumnType }) {
+export const Column = memo(function Column({ column, setData }: { column: ColumnType, setData: any }) {
     const columnId = column.columnId;
     const columnRef = useRef<HTMLDivElement | null>(null);
     const columnInnerRef = useRef<HTMLDivElement | null>(null);
@@ -303,7 +303,7 @@ export const Column = memo(function Column({ column }: { column: ColumnType }) {
                         <Box xcss={scrollContainerStyles} ref={scrollableRef}>
                             <Stack xcss={cardListStyles} space="space.100">
                                 {column.items.map((item) => (
-                                    <Card item={item} key={item.todoId} />
+                                    <Card item={item} key={item.todoId} setData={setData} />
                                 ))}
                             </Stack>
                         </Box>
@@ -334,54 +334,5 @@ function SafariColumnPreview({ column }: { column: ColumnType }) {
                 {column.title}
             </Heading>
         </Box>
-    );
-}
-
-function ActionMenuItems() {
-    const { columnId } = useColumnContext();
-    const { getColumns, reorderColumn } = useBoardContext();
-
-    const columns = getColumns();
-    const startIndex = columns.findIndex((column) => column.columnId === columnId);
-
-    const moveLeft = useCallback(() => {
-        reorderColumn({
-            startIndex,
-            finishIndex: startIndex - 1,
-        });
-    }, [reorderColumn, startIndex]);
-
-    const moveRight = useCallback(() => {
-        reorderColumn({
-            startIndex,
-            finishIndex: startIndex + 1,
-        });
-    }, [reorderColumn, startIndex]);
-
-    const isMoveLeftDisabled = startIndex === 0;
-    const isMoveRightDisabled = startIndex === columns.length - 1;
-
-    return (
-        <DropdownItemGroup>
-            <DropdownItem onClick={moveLeft} isDisabled={isMoveLeftDisabled}>
-                Move left
-            </DropdownItem>
-            <DropdownItem onClick={moveRight} isDisabled={isMoveRightDisabled}>
-                Move right
-            </DropdownItem>
-        </DropdownItemGroup>
-    );
-}
-
-function DropdownMenuTrigger({ triggerRef, ...triggerProps }: CustomTriggerProps) {
-    return (
-        <IconButton
-            ref={mergeRefs([triggerRef])}
-            appearance="subtle"
-            label="Actions"
-            spacing="compact"
-            icon={MoreIcon}
-            {...triggerProps}
-        />
     );
 }

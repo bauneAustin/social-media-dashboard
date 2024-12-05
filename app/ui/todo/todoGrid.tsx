@@ -466,13 +466,13 @@ export default function TodoGrid(){
     return (
         <>
             <div className='w-px:100 h-px:100 rounded ml-6 mt-4'>
-                <AddMenu callback={() => {}} />
+                <AddMenu setData={setData} />
             </div>
             <div className='w-full overflow-y-auto h-96 mt-4 relative'>
                 <BoardContext.Provider value={contextValue}>
                     <Board>
                         {data.orderedColumnIds.map((columnId) => {
-                            return <Column column={data.columnMap[columnId]} key={columnId} />;
+                            return <Column column={data.columnMap[columnId]} key={columnId} setData={setData} />;
                         })}
                     </Board>
                 </BoardContext.Provider>

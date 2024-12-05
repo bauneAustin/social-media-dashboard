@@ -3,8 +3,10 @@ import { useState } from "react";
 import Form from 'next/form';
 import { v4 } from "uuid";
 import { addTodo } from "@/app/lib/actions";
+import { getBasicData } from "../todo/people";
 
-export default function AddTodo() {
+export default function AddTodo(props: {setData: any, setShowModal: any}) {
+    const {setData, setShowModal} = props;
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -31,7 +33,16 @@ export default function AddTodo() {
                 }
             );
             window.localStorage.setItem('todos', JSON.stringify(todosList));
+            setData(() => {
+                const base = getBasicData(todosList);
+                return {
+                    ...base,
+                    lastOperation: null,
+                };
+            });
+            setShowModal(false);
         }
+
         await addTodo();
     };
 

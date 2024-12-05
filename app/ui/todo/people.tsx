@@ -1,7 +1,5 @@
 'use client';
 
-// Delete after verifies this works
-
 export type TodoItem = {
     todoId: string;
     title: string;

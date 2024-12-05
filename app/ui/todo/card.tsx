@@ -5,7 +5,6 @@ import React, {
     Fragment,
     memo,
     type Ref,
-    useCallback,
     useEffect,
     useRef,
     useState,
@@ -15,7 +14,6 @@ import ReactDOM from 'react-dom';
 import invariant from 'tiny-invariant';
 
 import Avatar from '@atlaskit/avatar';
-import { DropdownItem } from '@atlaskit/dropdown-menu';
 import Heading from '@atlaskit/heading';
 import {
     attachClosestEdge,
@@ -34,10 +32,11 @@ import { dropTargetForExternal } from '@atlaskit/pragmatic-drag-and-drop/externa
 import { Box, Grid, Stack, xcss } from '@atlaskit/primitives';
 import { token } from '@atlaskit/tokens';
 
-import { type ColumnType, type TodoItem } from './people';
+import {getBasicData, type TodoItem } from './people';
 
 import { useBoardContext } from './boardContext';
-import { useColumnContext } from './columnContext';
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { Lekton } from 'next/font/google';
 
 type State =
     | { type: 'idle' }
@@ -82,34 +81,33 @@ type CardPrimitiveProps = {
     closestEdge: Edge | null;
     item: TodoItem;
     state: State;
+    setData: any;
 };
 
-function MoveToOtherColumnItem({
-    targetColumn,
-    startIndex,
-}: {
-    targetColumn: ColumnType;
-    startIndex: number;
-}) {
-    const { moveCard } = useBoardContext();
-    const { columnId } = useColumnContext();
-
-    const onClick = useCallback(() => {
-        moveCard({
-            startColumnId: columnId,
-            finishColumnId: targetColumn.columnId,
-            itemIndexInStartColumn: startIndex,
-        });
-    }, [columnId, moveCard, startIndex, targetColumn.columnId]);
-
-    return <DropdownItem onClick={onClick}>{targetColumn.title}</DropdownItem>;
-}
-
 const CardPrimitive = forwardRef<HTMLDivElement, CardPrimitiveProps>(function CardPrimitive(
-    { closestEdge, item, state },
+    { closestEdge, item, state, setData },
     ref,
 ) {
-    const { column, title, description, todoId } = item;
+    const { title, description, todoId } = item;
+
+    const removeTodoItem = () => {
+        const todos = window.localStorage.getItem('todos');
+        if (todos) {
+            let todosList = JSON.parse(todos);
+            todosList = todosList.filter(item => {
+                return item.todoId !== todoId
+            });
+            window.localStorage.setItem('todos', JSON.stringify(todosList));
+
+            setData(() => {
+                const base = getBasicData(todosList);
+                return {
+                    ...base,
+                    lastOperation: null,
+                };
+            });
+        }
+    };
 
     return (
         <Grid
@@ -144,13 +142,16 @@ const CardPrimitive = forwardRef<HTMLDivElement, CardPrimitiveProps>(function Ca
                     {description}
                 </Box>
             </Stack>
+            <div onClick={removeTodoItem} className='relative w-8 h-8 bottom-[16px] left-[24px] cursor-pointer'>
+                <XMarkIcon className='w-4 h-4 text-valentino-950'/>
+            </div>
 
             {closestEdge && <DropIndicator edge={closestEdge} gap={token('space.100', '0')} />}
         </Grid>
     );
 });
 
-export const Card = memo(function Card({ item }: { item: TodoItem }) {
+export const Card = memo(function Card({ item, setData }: { item: TodoItem, setData: any }) {
     const ref = useRef<HTMLDivElement | null>(null);
     const { todoId } = item;
     const [closestEdge, setClosestEdge] = useState<Edge | null>(null);
@@ -239,6 +240,7 @@ export const Card = memo(function Card({ item }: { item: TodoItem }) {
                 item={item}
                 state={state}
                 closestEdge={closestEdge}
+                setData={setData}
             />
             {state.type === 'preview' &&
                 ReactDOM.createPortal(
@@ -256,7 +258,7 @@ export const Card = memo(function Card({ item }: { item: TodoItem }) {
                             height: state.rect.height,
                         }}
                     >
-                        <CardPrimitive item={item} state={state} closestEdge={null} />
+                        <CardPrimitive item={item} state={state} closestEdge={null} setData={setData} />
                     </Box>,
                     state.container,
                 )}

@@ -5,7 +5,8 @@ import Modal from '../modal/modal';
 import AddTodo from '../forms/addTodo';
 import { useState } from 'react';
 
-export default function AddMenu(props: {callback: () => any}) {
+export default function AddMenu(props: {setData: any}) {
+    const {setData} = props;
     const [showModal, setShowModal] = useState(false);
 
     const onButtonClick = () => {
@@ -16,7 +17,7 @@ export default function AddMenu(props: {callback: () => any}) {
         <>
             {showModal ? <Modal closeModalCallback={onButtonClick}>
                 <div className='bg-valentino-950 pt-6 pb-6 pl-10 pr-10 rounded'>
-                    <AddTodo />
+                    <AddTodo setData={setData} setShowModal={setShowModal} />
                 </div>
             </Modal> : null}
             <div onClick={onButtonClick} className='bg-valentino-500 p-4 rounded cursor-pointer hover:bg-valentino-300'>
