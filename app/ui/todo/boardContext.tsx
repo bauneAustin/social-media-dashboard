@@ -4,7 +4,7 @@ import invariant from 'tiny-invariant';
 
 import type { CleanupFn } from '@atlaskit/pragmatic-drag-and-drop/types';
 
-import type { ColumnType } from './people';
+import type { ColumnType } from './todoItem';
 
 export type BoardContextValue = {
     getColumns: () => ColumnType[];

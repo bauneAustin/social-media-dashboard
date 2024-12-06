@@ -3,7 +3,7 @@ import { useState } from "react";
 import Form from 'next/form';
 import { v4 } from "uuid";
 import { addTodo } from "@/app/lib/actions";
-import { getBasicData } from "../todo/people";
+import { getBasicData } from "../todo/todoItem";
 
 export default function AddTodo(props: {setData: any, setShowModal: any}) {
     const {setData, setShowModal} = props;
@@ -29,7 +29,7 @@ export default function AddTodo(props: {setData: any, setShowModal: any}) {
                     todoId: `id:${v4()}`,
                     title: formData.get('title'),
                     description: formData.get('description'),
-                    column: formData.get('column')
+                    columnId: formData.get('column')
                 }
             );
             window.localStorage.setItem('todos', JSON.stringify(todosList));

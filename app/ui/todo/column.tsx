@@ -35,7 +35,7 @@ import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/el
 import { Box, Flex, Inline, Stack, xcss } from '@atlaskit/primitives';
 import { token } from '@atlaskit/tokens';
 
-import { type ColumnType } from './people';
+import { type ColumnType } from './todoItem';
 
 import { useBoardContext } from './boardContext';
 import { Card } from './card';
@@ -43,6 +43,7 @@ import { ColumnContext, type ColumnContextProps, useColumnContext } from './colu
 
 const columnStyles = xcss({
     width: '32em',
+    height: '28em',
     // @ts-ignore
     backgroundColor: '#525151',
     borderRadius: 'border.radius.300',

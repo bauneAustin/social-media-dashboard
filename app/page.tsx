@@ -18,7 +18,7 @@ export default async function Home({
     <div className="flex min-h-screen flex-col p-6 pl-20 bg-valentino-950">
       <main className="flex flex-col h-full gap-8 items-center sm:items-start text-slate-50">
         <div className="text-3xl">
-          <h1>Media Dashboard</h1>
+          <h1>Productivity Dashboard</h1>
         </div>
         <div className="flex flex-row bg-valentino-900 rounded w-full h-96 outline outlnie-4 outline-valentino-900">
           <div className="">

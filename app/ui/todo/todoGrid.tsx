@@ -13,7 +13,7 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder';
 
-import { type ColumnMap, type ColumnType, getBasicData, type TodoItem } from './people';
+import { type ColumnMap, type ColumnType, getBasicData, type TodoItem } from './todoItem';
 import Board from './board';
 import { BoardContext, type BoardContextValue } from './boardContext';
 import { Column } from './column';
@@ -62,7 +62,7 @@ export default function TodoGrid(){
                 todoId: 'id:1',
                 title: "First Todo",
                 description: "This is your first todo",
-                column: 'todo'
+                columnId: 'todo'
             }];
             window.localStorage.setItem("todos", JSON.stringify(initialData));
         }
@@ -305,6 +305,18 @@ export default function TodoGrid(){
                     itemIndexInFinishColumn: newIndexInDestination,
                 };
 
+                const todos = window.localStorage.getItem('todos');
+                if (todos) {
+                    let todosList = JSON.parse(todos);
+                    todosList.map(todoItem => {
+                        if(todoItem.todoId === item.todoId) {
+                            todoItem.columnId = finishColumnId;
+                        }
+                        return todoItem
+                    });
+                    window.localStorage.setItem('todos', JSON.stringify(todosList));
+                }
+
                 return {
                     ...data,
                     columnMap: updatedMap,
@@ -468,7 +480,7 @@ export default function TodoGrid(){
             <div className='w-px:100 h-px:100 rounded ml-6 mt-4'>
                 <AddMenu setData={setData} />
             </div>
-            <div className='w-full overflow-y-auto h-96 mt-4 relative'>
+            <div className='w-full h-full mt-4 relative'>
                 <BoardContext.Provider value={contextValue}>
                     <Board>
                         {data.orderedColumnIds.map((columnId) => {
